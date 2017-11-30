@@ -1,0 +1,40 @@
+// claire lasserre
+
+	mrmovq len, %rax
+        irmovq $-1, %rbx
+        mrmovq result, %rsp
+        irmovq $0, %r9
+        irmovq $8, %r8
+Lloop :
+        irmovq $0, %rsi
+        subq %rsi, %rax
+        je Lend
+        mrmovq src(%r9), %rcx
+        xorq %rcx, %rsp
+        rmmovq %rcx, dest(%r9)
+        addq %rbx, %rax
+        addq %r8, %r9
+        jmp Lloop
+Lend:
+        rmmovq %rsp, result
+        halt
+
+.align 8
+# Source block
+src:
+        .quad 0x00a
+        .quad 0x0b0
+        .quad 0xc00
+
+# Destination block
+dest:
+        .quad 0x111
+        .quad 0x222
+        .quad 0x333
+
+len :
+        .quad 0x003
+
+result :
+        .quad 0x000
+

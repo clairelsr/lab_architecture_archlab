@@ -1,0 +1,773 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Copy a src block of len words to dst.
+# Return the number of positive words (>0) contained in src.
+#
+# Include your name and ID here.
+#
+# Describe how and why you modified the baseline code.
+#
+##################################################################
+# Do not modify this portion
+# Function prologue.
+# %rdi = src, %rsi = dst, %rdx = len
+ncopy:
+
+##################################################################
+# You can modify this portion
+
+
+
+
+
+
+
+
+#	# Loop header
+#	xorq %rax,%rax		# count = 0;
+#	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+
+#Loop:	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Npos		# if so, goto Npos:
+#	irmovq $1, %r10
+#	addq %r10, %rax		# count++
+#Npos:	irmovq $1, %r10
+#	subq %r10, %rdx		# len--
+#	irmovq $8, %r10
+#	addq %r10, %rdi		# src++
+#	addq %r10, %rsi		# dst++
+#	andq %rdx,%rdx		# len > 0?
+#	jg Loop			# if so, goto Loop:
+
+
+
+
+
+
+
+#	# Loop header
+#	xorq %rax,%rax		# count = 0;
+#	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $-2,%rdx
+#	jl limit
+
+#Loop:	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Npos1		# if so, goto Npos1:
+#	iaddq $1, %rax		# count++
+
+#Npos1:  mrmovq 8(%rdi), %r10	# read val from src+8
+#	rmmovq %r10, 8(%rsi)	# store scr1 dans dest1
+#	andq %r10,%r10		# val <= 0?
+#	jle nextcycle		# if so, goto Npo2s:
+#	iaddq 1, %rax		# count++
+
+#nextcycle: 
+#	iaddq $16, %rdi		#add 32 positions to src for the next cycle
+#	iaddq $16, %rsi 	#add 32 positions to dst for the next cycle
+#	iaddq $-2, %rdx		#len =len-4
+#	andq %rdx,%rdx		# len > 0?
+#	jge Loop		# if so, do again:
+
+#limit:
+#	iaddq $2, %rdx 		#to get the real value of len 
+
+#extra1:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	#here we are in the case where we need to copy at least one value
+#	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Done		# if so, goto extra2:
+#	iaddq $1, %rax		# count++ 
+
+
+
+
+
+
+#	# Loop header
+# 	xorq %rax,%rax		# count = 0;
+# 	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $-3,%rdx
+#	jl limit
+
+#Loop:	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Npos1		# if so, goto Npos1:
+#	iaddq $1, %rax		# count++
+
+#Npos1:  mrmovq 8(%rdi), %r10	# read val from src+8
+#	rmmovq %r10, 8(%rsi)	# store scr1 dans dest1
+#	andq %r10,%r10		# val <= 0?
+#	jle Npos2		# if so, goto Npo2s:
+#	iaddq 1, %rax		# count++
+
+#Npos2:  mrmovq 16(%rdi), %r10	# read val from src+16
+#	rmmovq %r10, 16(%rsi)	# store scr2 dans dest2
+#	andq %r10,%r10		# val <= 0?
+#	jle nextcycle		# if so, goto nextcycle:
+#	iaddq 1, %rax		# count++
+
+#nextcycle: 
+#	iaddq $24, %rdi		#add 32 positions to src for the next cycle
+#	iaddq $24, %rsi 	#add 32 positions to dst for the next cycle
+#	iaddq $-3, %rdx		#len =len-4
+#	andq %rdx,%rdx		# len > 0?
+#	jge Loop		# if so, do again:
+
+#limit:
+#	iaddq $3, %rdx 		#to get the real value of len 
+
+#extra1:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	#here we are in the case where we need to copy at least one value
+#	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra2		# if so, goto extra2:
+#	iaddq $1, %rax		# count++ 
+
+#extra2:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 8(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 8(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $1, %rax		# count++ 
+
+
+
+
+
+
+
+# 	# Loop header
+# 	xorq %rax,%rax		# count = 0;
+# 	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $-4,%rdx
+#	jl limit
+
+#Loop:	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Npos1		# if so, goto Npos1:
+#	iaddq $1, %rax		# count++
+
+#Npos1:  mrmovq 8(%rdi), %r10	# read val from src+8
+#	rmmovq %r10, 8(%rsi)	# store scr1 dans dest1
+#	andq %r10,%r10		# val <= 0?
+#	jle Npos2		# if so, goto Npo2s:
+#	iaddq 1, %rax		# count++
+
+#Npos2:  mrmovq 16(%rdi), %r10	# read val from src+16
+#	rmmovq %r10, 16(%rsi)	# store scr2 dans dest2
+#	andq %r10,%r10		# val <= 0?
+#	jle Npos3		# if so, goto Npos3:
+#	iaddq 1, %rax		# count++
+
+#Npos3:  mrmovq 24(%rdi), %r10	# read val from src+24
+#	rmmovq %r10, 24(%rsi)	# store scr3 dans dest3
+#	andq %r10,%r10		# val <= 0?
+#	jle nextcycle		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+
+#nextcycle: 
+#	iaddq $32, %rdi		#add 32 positions to src for the next cycle
+#	iaddq $32, %rsi 	#add 32 positions to dst for the next cycle
+#	iaddq $-4, %rdx		#len =len-4
+#	andq %rdx,%rdx		# len > 0?
+#	jge Loop		# if so, do again:
+
+#limit:
+#	iaddq $4, %rdx 		#to get the real value of len 
+
+#extra1:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	#here we are in the case where we need to copy at least one value
+#	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra2		# if so, goto extra2:
+#	iaddq $1, %rax		# count++ 
+
+#extra2:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 8(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 8(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?#	jle extra3		# if so, goto extra3:
+#	iaddq $1, %rax		# count++ 
+
+#extra3:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 16(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 16(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Done 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+
+
+
+
+# 	# Loop header
+# 	xorq %rax,%rax		# count = 0;
+# 	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $-4,%rdx
+#	jl limit
+
+#Loop:	mrmovq (%rdi), %r8	# read val from src...
+#	rmmovq %r8, (%rsi)	# ...and store it to dst
+#	mrmovq 8(%rdi), %r9	# read val from src+8
+#	rmmovq %r9, 8(%rsi)	# store scr1 dans dest1
+#	mrmovq 16(%rdi), %r10	# read val from src+16
+#	rmmovq %r10, 16(%rsi)	# store scr2 dans dest2
+#	mrmovq 24(%rdi), %r11	# read val from src+32
+#	rmmovq %r11, 24(%rsi)	# store scr3 dans dest3
+
+#	andq %r8, %r8		# val <= 0?
+#	jle Npos1		# if so, goto Npos1:
+#	iaddq $1, %rax		# count++
+
+#Npos1:  andq %r9,%r9		# val1 <= 0?
+#	jle Npos2		# if so, goto Npo2s:
+#	iaddq 1, %rax		# count++
+
+#Npos2:	andq %r10,%r10		# val2 <= 0?
+#	jle Npos3		# if so, goto Npos3:
+#	iaddq 1, %rax		# count++
+
+#Npos3:	andq %r11,%r11		# val3 <= 0?
+#	jle nextcycle		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+ 
+#nextcycle:
+#	iaddq $32, %rdi		#add 32 positions to src for the next cycle
+#	iaddq $32, %rsi 	#add 32 positions to dst for the next cycle
+#	iaddq $-4, %rdx		#len =len-4
+#	andq %rdx,%rdx		# len > 0?
+#	jge Loop		# if so, do again:
+
+#limit:
+#	iaddq   $4, %rdx 		#to get the real value of len 
+
+#extra1:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	#here we are in the case where we need to copy at least one value
+#	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra2		# if so, goto extra2:
+#	iaddq $1, %rax		# count++ 
+
+#extra2:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 8(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 8(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra3		# if so, goto extra3:
+#	iaddq $1, %rax		# count++ 
+
+#extra3:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 16(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 16(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Done 		# if so, goto Done: (we do not nedd other case, because we know it 					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+
+
+
+# 	# Loop header
+# 	xorq %rax,%rax		# count = 0;
+# 	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $-5,%rdx
+#	jl limit
+
+#Loop:	mrmovq (%rdi), %r8	# read val from src...
+#	rmmovq %r8, (%rsi)	# ...and store it to dst
+#	mrmovq 8(%rdi), %r9	# read val from src+8
+#	rmmovq %r9, 8(%rsi)	# store scr1 dans dest1
+#	mrmovq 16(%rdi), %r10	# read val from src+16
+#	rmmovq %r10, 16(%rsi)	# store scr2 dans dest2
+#	mrmovq 24(%rdi), %r11	# read val from src+24
+#	rmmovq %r11, 24(%rsi)	# store scr3 dans dest3
+#	mrmovq 32(%rdi), %r12	# read val from src+32
+#	rmmovq %r12, 32(%rsi)	# store scr4 dans dest4
+
+#	andq %r8, %r8		# val <= 0?
+#	jle Npos1		# if so, goto Npos1:
+#	iaddq $1, %rax		# count++
+
+#Npos1:  andq %r9,%r9		# val1 <= 0?
+#	jle Npos2		# if so, goto Npo2s:
+#	iaddq 1, %rax		# count++
+
+#Npos2:	andq %r10,%r10		# val2 <= 0?
+#	jle Npos3		# if so, goto Npos3:
+#	iaddq 1, %rax		# count++
+
+#Npos3:	andq %r11,%r11		# val3 <= 0?
+#	jle Npos4		# if so, goto Npos4:
+#	iaddq 1, %rax		# count++
+
+#Npos4:	andq %r12,%r12		# val4 <= 0?
+#	jle nextcycle		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+ 
+#nextcycle:
+#	iaddq $40, %rdi		#add 32 positions to src for the next cycle
+#	iaddq $40, %rsi 	#add 32 positions to dst for the next cycle
+#	iaddq $-5, %rdx		#len =len-4
+#	andq %rdx,%rdx		# len > 0?
+#	jge Loop		# if so, do again:
+
+#limit:
+#	iaddq   $5, %rdx 		#to get the real value of len 
+#
+#extra1:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	#here we are in the case where we need to copy at least one value
+#	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra2		# if so, goto extra2:
+#	iaddq $1, %rax		# count++ 
+
+#extra2:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 8(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 8(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra3		# if so, goto extra3:
+#	iaddq $1, %rax		# count++ 
+#
+#extra3:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 16(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 16(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra4 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+#
+#extra4:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 24(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 24(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Done 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+
+
+
+
+ 	# Loop header
+# 	xorq %rax,%rax		# count = 0;
+# 	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $-8,%rdx
+#	jl limit
+
+#Loop:	mrmovq (%rdi), %r8	# read val from src...
+#	rmmovq %r8, (%rsi)	# ...and store it to dst
+#	mrmovq 8(%rdi), %r9	# read val from src+8
+#	rmmovq %r9, 8(%rsi)	# store scr1 dans dest1
+#	mrmovq 16(%rdi), %r10	# read val from src+16
+#	rmmovq %r10, 16(%rsi)	# store scr2 dans dest2
+#	mrmovq 24(%rdi), %r11	# read val from src+24
+#	rmmovq %r11, 24(%rsi)	# store scr3 dans dest3
+#	mrmovq 32(%rdi), %r12	# read val from src+32
+#	rmmovq %r12, 32(%rsi)	# store scr4 dans dest4
+#	mrmovq 40(%rdi), %r13	# read val from src+40
+#	rmmovq %r13, 40(%rsi)	# store scr5 dans dest5
+#	mrmovq 48(%rdi), %r14	# read val from src+48
+#	rmmovq %r14, 48(%rsi)	# store scr6 dans dest6
+#	mrmovq 56(%rdi), %rcx	# read val from src+48
+#	rmmovq %rcx, 56(%rsi)	# store scr7 dans dest7
+#
+#	andq %r8, %r8		# val <= 0?
+#	jle Npos1		# if so, goto Npos1:
+#	iaddq $1, %rax		# count++
+#
+#Npos1:  andq %r9,%r9		# val1 <= 0?
+#	jle Npos2		# if so, goto Npo2s:
+#	iaddq 1, %rax		# count++
+#
+#Npos2:	andq %r10,%r10		# val2 <= 0?
+#	jle Npos3		# if so, goto Npos3:
+#	iaddq 1, %rax		# count++
+#
+#Npos3:	andq %r11,%r11		# val3 <= 0?
+#	jle Npos4		# if so, goto Npos4:
+#	iaddq 1, %rax		# count++
+#
+#Npos4:	andq %r12,%r12		# val4 <= 0?
+#	jle Npos5		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+
+#Npos5:	andq %r13,%r13		# val5 <= 0?
+#	jle Npos6		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+
+#Npos6:	andq %r14,%r14		# val6 <= 0?
+#	jle Npos7		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+
+#Npos7:	andq %rcx,%rcx		# val6 <= 0?
+#	jle nextcycle		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+
+ 
+#nextcycle:
+#	iaddq $-8, %rdx		#len =len-8
+#	iaddq $64, %rdi		#add 56 positions to src for the next cycle
+#	iaddq $64, %rsi 	#add 56 positions to dst for the next cycle
+#	andq %rdx,%rdx		# len > 0?
+#	jge Loop		# if so, do again:
+#
+#limit:
+#	iaddq   $8, %rdx 		#to get the real value of len 
+
+#extra1:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	#here we are in the case where we need to copy at least one value
+#	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra2		# if so, goto extra2:
+#	iaddq $1, %rax		# count++ 
+#
+#extra2:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 8(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 8(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra3		# if so, goto extra3:
+#	iaddq $1, %rax		# count++ 
+#
+#extra3:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 16(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 16(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra4 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+#
+#extra4:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 24(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 24(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra5 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+#
+#
+#extra5:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 32(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 32(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra6 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+#
+#extra6:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 40(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 40(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra7		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+#
+#extra7:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 48(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 48(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Done 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+#
+
+
+
+
+
+
+# 	# Loop header
+# 	xorq %rax,%rax		# count = 0;
+# 	andq %rdx,%rdx		# len <= 0?
+#	jle Done		# if so, goto Done:
+#	iaddq $-5,%rdx
+#	jl limit
+
+#Loop:	mrmovq (%rdi), %r8	# read val from src...
+#	rmmovq %r8, (%rsi)	# ...and store it to dst
+#	mrmovq 8(%rdi), %r9	# read val from src+8
+#	rmmovq %r9, 8(%rsi)	# store scr1 dans dest1
+#	mrmovq 16(%rdi), %r10	# read val from src+16
+#	rmmovq %r10, 16(%rsi)	# store scr2 dans dest2
+#	mrmovq 24(%rdi), %r11	# read val from src+24
+#	rmmovq %r11, 24(%rsi)	# store scr3 dans dest3
+#	mrmovq 32(%rdi), %r12	# read val from src+32
+#	rmmovq %r12, 32(%rsi)	# store scr4 dans dest4
+
+#	andq %r8, %r8		# val <= 0?
+#	jle Npos1		# if so, goto Npos1:
+#	iaddq $1, %rax		# count++
+
+#Npos1:  andq %r9,%r9		# val1 <= 0?
+#	jle Npos2		# if so, goto Npo2s:
+#	iaddq 1, %rax		# count++
+
+#Npos2:	andq %r10,%r10		# val2 <= 0?
+#	jle Npos3		# if so, goto Npos3:
+#	iaddq 1, %rax		# count++
+
+#Npos3:	andq %r11,%r11		# val3 <= 0?
+#	jle Npos4		# if so, goto Npos4:
+#	iaddq 1, %rax		# count++
+
+#Npos4:	andq %r12,%r12		# val4 <= 0?
+#	jle nextcycle		# if so, goto nextround:
+#	iaddq 1, %rax		# count++
+ 
+#nextcycle:
+#	iaddq $40, %rdi		#add 32 positions to src for the next cycle
+#	iaddq $40, %rsi 	#add 32 positions to dst for the next cycle
+#	iaddq $-5, %rdx		#len =len-4
+#	andq %rdx,%rdx		# len > 0?
+#	jge Loop		# if so, do again:
+
+#limit:
+#	iaddq   $5, %rdx 		#to get the real value of len 
+#
+#extra1:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	#here we are in the case where we need to copy at least one value
+#	mrmovq (%rdi), %r10	# read val from src...
+#	rmmovq %r10, (%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra2		# if so, goto extra2:
+#	iaddq $1, %rax		# count++ 
+
+#extra2:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 8(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 8(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra3		# if so, goto extra3:
+#	iaddq $1, %rax		# count++ 
+#
+#extra3:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 16(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 16(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle extra4 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+#
+#extra4:
+#	iaddq $-1, %rdx 	#len=len-1
+#	jl Done
+#	mrmovq 24(%rdi), %r10	# read val from src...
+#	rmmovq %r10, 24(%rsi)	# ...and store it to dst
+#	andq %r10, %r10		# val <= 0?
+#	jle Done 		# if so, goto Done: (we do not nedd other case, because we know it #					# was len -3<=0 before the 3 extras
+#	iaddq $1, %rax		# count++ 
+
+
+
+
+
+
+
+
+
+
+ 	# Loop header
+ 	xorq %rax,%rax		# count = 0;
+ 	andq %rdx,%rdx		# len <= 0?
+	jle Done		# if so, goto Done:
+	iaddq $-8,%rdx
+	jl extra1
+
+Loop:	mrmovq (%rdi), %r8	# read val from src...
+	mrmovq 8(%rdi), %r9	# read val from src+8
+	mrmovq 16(%rdi), %r10	# read val from src+16
+	mrmovq 24(%rdi), %r11	# read val from src+24
+	mrmovq 32(%rdi), %r12	# read val from src+32
+	mrmovq 40(%rdi), %r13	# read val from src+40
+	mrmovq 48(%rdi), %r14	# read val from src+48
+	mrmovq 56(%rdi), %rcx	# read val from src+48
+	rmmovq %r8, (%rsi)	# ...and store it to dst
+	rmmovq %r9, 8(%rsi)	# store scr1 dans dest1
+	rmmovq %r10, 16(%rsi)	# store scr2 dans dest2
+	rmmovq %r11, 24(%rsi)	# store scr3 dans dest3
+	rmmovq %r12, 32(%rsi)	# store scr4 dans dest4
+	rmmovq %r13, 40(%rsi)	# store scr5 dans dest5
+	rmmovq %r14, 48(%rsi)	# store scr6 dans dest6
+	rmmovq %rcx, 56(%rsi)	# store scr7 dans dest7
+
+	andq %r8, %r8		# val <= 0?
+	jle Npos1		# if so, goto Npos1:
+	iaddq $1, %rax		# count++
+
+Npos1:  andq %r9,%r9		# val1 <= 0?
+	jle Npos2		# if so, goto Npo2s:
+	iaddq 1, %rax		# count++
+
+Npos2:	andq %r10,%r10		# val2 <= 0?
+	jle Npos3		# if so, goto Npos3:
+	iaddq 1, %rax		# count++
+
+Npos3:	andq %r11,%r11		# val3 <= 0?
+	jle Npos4		# if so, goto Npos4:
+	iaddq 1, %rax		# count++
+
+Npos4:	andq %r12,%r12		# val4 <= 0?
+	jle Npos5		# if so, goto nextround:
+	iaddq 1, %rax		# count++
+
+Npos5:	andq %r13,%r13		# val5 <= 0?
+	jle Npos6		# if so, goto nextround:
+	iaddq 1, %rax		# count++
+
+Npos6:	andq %r14,%r14		# val6 <= 0?
+	jle Npos7		# if so, goto nextround:
+	iaddq 1, %rax		# count++
+
+Npos7:	andq %rcx,%rcx		# val6 <= 0?
+	jle nextcycle		# if so, goto nextround:
+	iaddq 1, %rax		# count++
+
+ 
+nextcycle:
+	iaddq $-8, %rdx		#len =len-8
+	iaddq $64, %rdi		#add 64 positions to src for the next cycle
+	iaddq $64, %rsi 	#add 64 positions to dst for the next cycle
+	andq %rdx,%rdx		# len > 0?
+	jge Loop		# if so, do again:
+
+#limit:
+#	iaddq   $8, %rdx 		#to get the real value of len 
+
+extra1:
+	mrmovq (%rdi), %r10	# read val from src...
+	iaddq $7, %rdx 	#len=len+7 pour en 1 etape r2cuperer la taille reelle puis analyser le cas taille =1
+	jl Done
+	#here we are in the case where we need to copy at least one value
+
+	mrmovq 8(%rdi), %r9	# read val from src...
+	
+	rmmovq %r10, (%rsi)	# ...and store it to dst
+	andq %r10, %r10		# val <= 0?
+	jle extra2		# if so, goto extra2:
+	iaddq $1, %rax		# count++ 
+
+extra2:
+	iaddq $-1, %rdx 	#len=len-1
+	jl Done
+	rmmovq %r9, 8(%rsi)	# ...and store it to dst
+	mrmovq 16(%rdi), %r8	# read val from src...
+	
+	andq %r9, %r9		# val <= 0?
+	jle extra3		# if so, goto extra3:
+	iaddq $1, %rax		# count++ 
+
+extra3:
+	iaddq $-1, %rdx 	#len=len-1
+	jl Done
+	rmmovq %r8, 16(%rsi)	# ...and store it to dst
+	mrmovq 24(%rdi),%r11
+	
+	andq %r8, %r8		# val <= 0?
+	jle extra4 		# if so, goto Done: (we do not nedd other case, because we know it 					# was len -3<=0 before the 3 extras
+	iaddq $1, %rax		# count++ 
+
+extra4:
+	iaddq $-1, %rdx 	#len=len-1
+	jl Done
+	rmmovq %r11, 24(%rsi)	# ...and store it to dst
+	mrmovq 32(%rdi), %r12	# read val from src...
+	
+	andq %r11, %r11		# val <= 0?
+	jle extra5 		# if so, goto Done: (we do not nedd other case, because we know it 					# was len -3<=0 before the 3 extras
+	iaddq $1, %rax		# count++ 
+
+
+extra5:
+	iaddq $-1, %rdx 	#len=len-1
+	jl Done
+	rmmovq %r12, 32(%rsi)	# ...and store it to dst		
+	mrmovq 40(%rdi), %r13	# read val from src...
+	
+	andq %r12, %r12		# val <= 0?
+	jle extra6 		# if so, goto Done: (we do not nedd other case, because we know it 					# was len -3<=0 before the 3 extras
+	iaddq $1, %rax		# count++ 
+
+extra6:
+	iaddq $-1, %rdx 	#len=len-1
+	jl Done
+	rmmovq %r13, 40(%rsi)	# ...and store it to dst
+	mrmovq 48(%rdi),%r14
+	
+	andq %r13, %r13		# val <= 0?
+	jle extra7		# if so, goto Done: (we do not nedd other case, because we know it 					# was len -3<=0 before the 3 extras
+	iaddq $1, %rax		# count++ 
+
+extra7:
+	iaddq $-1, %rdx 	#len=len-1
+	jl Done
+	
+	rmmovq %r14, 48(%rsi)	# ...and store it to dst
+	andq %r14, %r14		# val <= 0?
+	jle Done 		# if so, goto Done: (we do not nedd other case, because we know it 					# was len -3<=0 before the 3 extras
+	iaddq $1, %rax		# count++ 
+
+
+
+
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+Done:
+	ret
+##################################################################
+# Keep the following label at the end of your function
+End:
+
+
+
+
+

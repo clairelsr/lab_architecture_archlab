@@ -1,0 +1,22 @@
+// claire lasserre
+
+
+    mrmovq y, %rax
+    mrmovq x,%rbx
+    mrmovq x, %rcx
+    irmovq $5, %rsi
+    irmovq $1, %rdi
+    subq %rsi,%rcx
+    jle Ltrue
+    addq %rbx, %rdi
+    rrmovq %rdi,%rax
+    jmp Lend
+Ltrue :
+    rrmovq %rbx,%rax
+Lend :
+    rmmovq %rax,y
+    halt
+.pos 100
+x: .quad 0x0c
+y: .quad 0x00
+
